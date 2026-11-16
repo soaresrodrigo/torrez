@@ -1,0 +1,35 @@
+---
+// Marca do Torre Z: um prédio com as janelas acesas desenhando um Z.
+// Decorativa por padrão (o nome vem escrito ao lado); passe `titulo` para usá-la sozinha.
+interface Props {
+	class?: string;
+	titulo?: string;
+}
+const { class: classe = 'h-9 w-auto', titulo } = Astro.props;
+---
+
+<svg
+	class={classe}
+	viewBox="24 2 52 96"
+	role={titulo ? 'img' : undefined}
+	aria-label={titulo}
+	aria-hidden={titulo ? undefined : 'true'}
+>
+	<rect x="26" y="4" width="48" height="92" rx="6" fill="#0f766e" />
+	<rect x="32.5" y="12" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="45.5" y="12" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="58.5" y="12" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="32.5" y="25" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="45.5" y="25" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="58.5" y="25" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="32.5" y="38" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="45.5" y="38" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="58.5" y="38" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="32.5" y="51" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="45.5" y="51" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="58.5" y="51" width="9" height="9" rx="2" fill="#358b85" />
+	<rect x="32.5" y="64" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="45.5" y="64" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="58.5" y="64" width="9" height="9" rx="2" fill="#fbbf24" />
+	<rect x="43" y="79" width="14" height="17" rx="2" fill="#ccfbf1" />
+</svg>

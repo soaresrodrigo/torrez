@@ -1,0 +1,87 @@
+---
+import { NOME_SITE } from '../site.ts';
+import Logo from './Logo.astro';
+// Menu das ferramentas. Sem JS: no celular abre com <details>.
+const links = [
+	{ href: '/', rotulo: 'Início' },
+	{ href: '/simulador-reforma', rotulo: 'Calculadora de reforma' },
+	{ href: '/simulador-juros-obra', rotulo: 'Juros de obra', emBreve: true },
+];
+
+const atual = Astro.url.pathname.replace(/\/$/, '') || '/';
+const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith(href));
+---
+
+<a
+	href="#conteudo"
+	class="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:shadow"
+>
+	Pular para o conteúdo
+</a>
+<header class="border-b border-slate-200 bg-white">
+	<nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6" aria-label="Principal">
+		<a href="/" class="flex min-h-14 items-center gap-2 font-bold tracking-tight text-slate-900">
+			<Logo class="h-9 w-auto" />
+			{NOME_SITE}
+		</a>
+
+		<ul class="hidden items-center gap-1 text-sm md:flex">
+			{
+				links.map((l) => (
+					<li>
+						{l.emBreve ? (
+							<span class="flex min-h-11 items-center gap-1.5 px-3 text-slate-400" aria-disabled="true">
+								{l.rotulo}
+								<span class="rounded-full bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">em breve</span>
+							</span>
+						) : (
+							<a
+								href={l.href}
+								aria-current={ativo(l.href) ? 'page' : undefined}
+								class="flex min-h-11 items-center rounded-lg px-3 font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 aria-[current=page]:bg-teal-50 aria-[current=page]:text-teal-800"
+							>
+								{l.rotulo}
+							</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
+
+		<details class="group relative md:hidden">
+			<summary
+				class="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 [&::-webkit-details-marker]:hidden"
+				aria-label="Abrir menu"
+			>
+				<svg class="size-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"></path>
+				</svg>
+				<svg class="hidden size-6 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+				</svg>
+			</summary>
+			<ul class="absolute right-0 z-40 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 text-sm shadow-lg">
+				{
+					links.map((l) => (
+						<li>
+							{l.emBreve ? (
+								<span class="flex min-h-11 items-center justify-between px-3 text-slate-400" aria-disabled="true">
+									{l.rotulo}
+									<span class="rounded-full bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">em breve</span>
+								</span>
+							) : (
+								<a
+									href={l.href}
+									aria-current={ativo(l.href) ? 'page' : undefined}
+									class="flex min-h-11 items-center rounded-lg px-3 font-medium text-slate-700 hover:bg-slate-100 aria-[current=page]:bg-teal-50 aria-[current=page]:text-teal-800"
+								>
+									{l.rotulo}
+								</a>
+							)}
+						</li>
+					))
+				}
+			</ul>
+		</details>
+	</nav>
+</header>

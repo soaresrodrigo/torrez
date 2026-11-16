@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+}
+/* Desenho da planta (svgPlanta), usado na calculadora e na home. */
+.planta-svg .comodo {
+  fill: #f8fafc;
+  stroke: #334155;
+  stroke-width: 4;
+  cursor: pointer;
+  transition: fill 120ms;
+}
+.planta-svg .comodo.molhada {
+  fill: #f0f9ff;
+}
+.planta-svg .comodo:hover {
+  fill: #ccfbf1;
+}
+.planta-svg .comodo:focus {
+  outline: none;
+}
+.planta-svg .comodo:focus-visible {
+  stroke: #0d9488;
+  stroke-width: 8;
+}
+.planta-svg .comodo[data-marcado='true'] {
+  fill: #5eead4;
+}
+.planta-svg .comodo[aria-pressed='true'] {
+  stroke: #0f766e;
+  stroke-width: 9;
+}
+.planta-svg.editavel .comodo {
+  cursor: move;
+}
+.planta-svg .comodo.destaque {
+  fill: #ccfbf1;
+  stroke: #0f766e;
+  stroke-width: 7;
+}
+.planta-svg .comodo.sobreposto {
+  stroke: #e11d48;
+  stroke-dasharray: 14 8;
+}
+.planta-svg.estatica .comodo {
+  pointer-events: none;
+}
+.planta-svg .alca {
+  cursor: nwse-resize;
+}
+.planta-svg .alca-toque {
+  fill: transparent;
+}
+.planta-svg .alca-ponto {
+  fill: #0d9488;
+  stroke: #fff;
+  stroke-width: 4;
+  transition: r 120ms;
+}
+.planta-svg .alca:hover .alca-ponto,
+.planta-svg .alca.ativa .alca-ponto {
+  fill: #0f766e;
+  r: 15;
+}
+.planta-svg .medida-ativa rect {
+  fill: #0f172a;
+}
+.planta-svg .medida-ativa text {
+  fill: #fff;
+  font-size: 20px;
+  font-weight: 600;
+}
+.planta-svg.editavel {
+  touch-action: none;
+  user-select: none;
+}
+.planta-svg text {
+  pointer-events: none;
+  fill: #0f172a;
+}
+.planta-svg .nome {
+  font-size: 20px;
+  font-weight: 600;
+}
+.planta-svg .area {
+  font-size: 19px;
+  fill: #475569;
+}
+@media (prefers-reduced-motion: reduce) {
+  .planta-svg .comodo {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Animações. Todas somem com "reduzir movimento" (fim do arquivo).
+   ------------------------------------------------------------------ */
+
+/* Troca suave entre páginas (nativo do navegador, sem JS). */
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes surgir {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes estalar {
+  0% { opacity: 0; transform: scale(0.4); }
+  70% { opacity: 1; transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes pulso {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes vir-da-direita {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes vir-da-esquerda {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes abrir-dialogo {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Entrada ao carregar: use com style="--atraso: 120ms" para escalonar. */
+.anima-entrar {
+  animation: entrar 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+.anima-estalar {
+  animation: estalar 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+.anima-pulso {
+  animation: pulso 0.35s ease-out;
+}
+.anima-flutuar {
+  animation: flutuar 6s ease-in-out infinite;
+}
+.anima-direita {
+  animation: vir-da-direita 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.anima-esquerda {
+  animation: vir-da-esquerda 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.anima-surgir {
+  animation: surgir 0.35s ease both;
+  animation-delay: var(--atraso, 0ms);
+}
+
+/* Revelar ao rolar: só esconde se o JS estiver ativo (classe .js no <html>). */
+.js [data-revelar] {
+  opacity: 0;
+}
+/* Animação (e não transição) para não brigar com transições de hover do elemento. */
+.js [data-revelar].revelado {
+  animation: entrar 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+
+/* Janela (dialog) e fundo. */
+dialog[open] {
+  animation: abrir-dialogo 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+dialog[open]::backdrop {
+  animation: surgir 0.22s ease;
+}
+
+/* Menu do celular abrindo. */
+nav details[open] > ul {
+  animation: entrar 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Rodapé chegando. */
+body > footer {
+  animation: surgir 0.6s ease both;
+}
+
+/* Botões: leve "afundar" ao tocar. */
+.aperta {
+  transition: transform 0.12s ease;
+}
+.aperta:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  *,
+  *::before,
+  *::after,
+  ::backdrop {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-delay: 0ms !important;
+  }
+  .js [data-revelar] {
+    opacity: 1;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

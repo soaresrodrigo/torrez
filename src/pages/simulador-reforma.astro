@@ -1,0 +1,312 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Menu from '../components/Menu.astro';
+import { NOME_SITE } from '../site.ts';
+import Planta from '../components/reforma/Planta.astro';
+import { plantaComum as planta } from '../data/planta.ts';
+import { precos } from '../data/precos.ts';
+import { regrasCondominio as regras } from '../data/regras-condominio.ts';
+import { CATEGORIAS } from '../lib/calc/categorias.ts';
+import { PACOTES } from '../lib/calc/servicos.ts';
+import { htmlLinhasMedidas, htmlPontos, htmlSlides } from '../lib/ui/paineis.ts';
+
+
+const dados = { planta, precos, regras };
+const card = 'relative rounded-2xl border border-slate-200 bg-white shadow-sm';
+// Número do passo: círculo flutuando no canto superior esquerdo, metade para fora do card.
+const passo =
+	'pointer-events-none absolute -left-4 -top-4 z-10 flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-lg font-extrabold leading-none text-white shadow-md shadow-teal-900/25 ring-[3px] ring-white';
+---
+
+<Layout
+	title={`Calculadora de reforma | ${NOME_SITE}`}
+	description="Para apartamentos de 2 quartos com cerca de 40 m²: marque os cômodos e veja quanto material comprar e uma faixa de preço de referência."
+	bodyClass="bg-slate-50 text-slate-800 antialiased"
+>
+	<Menu />
+	<main
+		id="conteudo"
+		class="mx-auto flex max-w-6xl flex-col px-4 pb-6 sm:px-6 lg:h-[calc(100dvh-57px)] lg:pb-4"
+	>
+		<!-- Título + prévia do total. No celular gruda no topo. -->
+		<header
+			class="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-4 lg:backdrop-blur-none"
+		>
+			<div class="anima-entrar min-w-0">
+				<h1 class="text-lg font-bold leading-tight tracking-tight text-slate-900 sm:text-3xl">Calculadora de reforma</h1>
+				<p class="hidden text-sm text-slate-600 sm:block">
+					Para apartamentos de 2 quartos com cerca de 40 m² · toque nos cômodos e marque os serviços
+				</p>
+			</div>
+			<div class="anima-entrar flex shrink-0 items-center gap-2" style="--atraso: 80ms">
+				<div
+					id="previa"
+					class="rounded-xl bg-teal-600 px-3 py-1.5 text-right text-white shadow-sm sm:px-4 sm:py-2"
+					aria-live="polite"
+				>
+					<p class="text-[11px] font-medium uppercase tracking-wide text-teal-100">Total estimado</p>
+					<p id="previa-valor" class="text-base font-bold tabular-nums sm:text-xl">R$ 0</p>
+				</div>
+				<button
+					type="button"
+					id="compartilhar"
+					class="aperta flex size-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+					aria-label="Compartilhar resultado"
+					title="Compartilhar resultado"
+					disabled
+				>
+					<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" stroke-linecap="round" stroke-linejoin="round"
+						></path>
+					</svg>
+				</button>
+			</div>
+		</header>
+
+		<form
+			id="calc"
+			class="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:mt-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+			novalidate
+		>
+			<!-- 1. Planta -->
+			<section class:list={[card, 'anima-entrar flex min-h-0 flex-col p-4']} style="--atraso: 60ms" aria-labelledby="t-planta">
+				<span class:list={[passo, 'anima-estalar']} style="--atraso: 300ms" aria-hidden="true">1</span>
+				<div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+					<h2 id="t-planta" class="whitespace-nowrap pl-5 font-semibold text-slate-900"><span class="sr-only">Passo 1: </span>Sua planta</h2>
+					<div class="flex items-center gap-2">
+					<button
+						type="button"
+						id="abrir-medidas"
+						class="aperta flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50"
+						aria-haspopup="dialog"
+					>
+						<svg class="size-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+							><path d="M3 17 17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+						>
+						Editar planta
+					</button>
+					<label
+						class="flex min-h-9 cursor-pointer items-center gap-2 rounded-full border border-slate-200 py-1 pl-3 pr-1 text-sm text-slate-700 hover:bg-slate-50"
+						title="Use se a sua planta for a imagem espelhada desta (comum em apartamentos vizinhos de porta)"
+					>
+						<svg class="size-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+							><path d="M12 3v18M8 7l-4 5 4 5M16 7l4 5-4 5" stroke-linecap="round" stroke-linejoin="round"></path></svg
+						>
+						Espelhar
+						<input type="checkbox" name="espelhada" value="1" role="switch" class="peer sr-only" />
+						<span
+							class="relative h-6 w-10 rounded-full bg-slate-300 transition-colors after:absolute after:left-0.5 after:top-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:bg-teal-600 peer-checked:after:translate-x-4 peer-focus-visible:ring-2 peer-focus-visible:ring-teal-600 peer-focus-visible:ring-offset-1"
+							aria-hidden="true"></span>
+					</label>
+					</div>
+				</div>
+
+				<Planta planta={planta} class="mt-3 lg:flex-1" />
+
+				<div class="mt-3">
+					<div class="flex items-center justify-between">
+						<h3 class="text-sm font-semibold text-slate-700">Apartamento todo</h3>
+						<button
+							type="button"
+							id="limpar"
+							class="min-h-9 text-sm text-slate-600 underline underline-offset-4 disabled:text-slate-300 disabled:no-underline"
+						>
+							Limpar
+						</button>
+					</div>
+					<div class="mt-1.5 grid grid-cols-3 gap-2">
+						{
+							PACOTES.map((p) => (
+								<button
+									type="button"
+									data-pacote={p.id}
+									aria-pressed="false"
+									title={p.descricao}
+									class="aperta group relative min-h-11 rounded-xl border border-teal-200 bg-teal-50 py-1.5 pl-2 pr-6 text-left text-sm transition-colors hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 aria-pressed:border-teal-700 aria-pressed:bg-teal-700 aria-pressed:shadow-sm aria-pressed:hover:bg-teal-800"
+								>
+									<span class="block font-semibold text-teal-900 group-aria-pressed:text-white">{p.nome}</span>
+									<span class="block text-[11px] leading-tight text-teal-800 group-aria-pressed:text-teal-50">{p.descricao}</span>
+									<svg
+										class="absolute right-1.5 top-1.5 hidden size-4 text-white group-aria-pressed:block"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="3"
+										aria-hidden="true"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"></path></svg
+									>
+								</button>
+							))
+						}
+					</div>
+					<p id="pacote-status" class="mt-1.5 min-h-4 text-[11px] leading-tight text-slate-500" aria-live="polite"></p>
+				</div>
+			</section>
+
+			<div class="flex min-h-0 flex-col gap-6">
+				<!-- 2. Serviços: um slide por cômodo -->
+				<section class:list={[card, 'anima-entrar p-4']} style="--atraso: 140ms" aria-labelledby="t-servicos" aria-roledescription="carrossel">
+				<span class:list={[passo, 'anima-estalar']} style="--atraso: 380ms" aria-hidden="true">2</span>
+					<div class="flex items-center justify-between gap-2">
+						<h2 id="t-servicos" class="whitespace-nowrap pl-5 font-semibold text-slate-900"><span class="sr-only">Passo 2: </span>Serviços</h2>
+						<div class="flex items-center gap-1">
+							<button
+								type="button"
+								data-slide="-1"
+								class="flex size-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100"
+								aria-label="Cômodo anterior"
+							>
+								<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+									><path d="M15 6l-6 6 6 6" stroke-linecap="round"></path></svg
+								>
+							</button>
+							<div id="pontos" class="flex gap-1" role="tablist" aria-label="Cômodos" set:html={htmlPontos(planta)} />
+							<span id="contador" class="hidden min-w-12 text-center text-xs tabular-nums text-slate-500" aria-hidden="true"></span>
+							<button
+								type="button"
+								data-slide="1"
+								class="flex size-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100"
+								aria-label="Próximo cômodo"
+							>
+								<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+									><path d="M9 6l6 6-6 6" stroke-linecap="round"></path></svg
+								>
+							</button>
+						</div>
+					</div>
+
+					<div id="slides" class="mt-2 min-h-[9.25rem] touch-pan-y overflow-x-clip" set:html={htmlSlides(planta)} />
+				</section>
+
+				<!-- 3. Resultado: ocupa o resto da altura e rola por dentro -->
+				<section class:list={[card, 'anima-entrar flex min-h-0 flex-1 flex-col p-4']} style="--atraso: 220ms" aria-labelledby="t-resultado">
+				<span class:list={[passo, 'anima-estalar']} style="--atraso: 460ms" aria-hidden="true">3</span>
+					<div class="flex items-center justify-between gap-3">
+						<h2 id="t-resultado" class="whitespace-nowrap pl-5 font-semibold text-slate-900"><span class="sr-only">Passo 3: </span>Resultado</h2>
+						<label class="flex items-center gap-1.5 text-xs text-slate-600" title="Sobra de material para cortes e quebras">
+							Perda
+							<input
+								type="number"
+								name="perda"
+								value="10"
+								min="0"
+								max="50"
+								step="1"
+								inputmode="numeric"
+								class="w-14 rounded-lg border border-slate-300 px-1.5 py-1 text-sm tabular-nums"
+							/>
+							%
+						</label>
+					</div>
+					<output id="resultado" for="calc" class="mt-2 block min-h-0 flex-1 overflow-y-auto" aria-live="polite">
+						<p class="text-sm text-slate-500">Toque em um cômodo da planta ou escolha um pacote.</p>
+					</output>
+					<p class="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-500">
+						Preços de referência para Salvador e região (BA), de uma busca rápida na internet (nov/2026). Piso, rodapé,
+						pintura e revestimento são só mão de obra; o material está em “comprar”. Não é cotação: peça orçamento antes de fechar. Medidas de uma planta típica de 2 quartos com cerca de 40 m² (34,9 m² de piso, sem contar as paredes). Em apartamentos desse tamanho, as quantidades mudam pouco; portas e janelas têm tamanho padrão.
+					</p>
+				</section>
+			</div>
+		</form>
+	</main>
+
+
+	<dialog
+		id="medidas"
+		class="m-auto w-[min(60rem,calc(100vw-1.5rem))] rounded-2xl p-0 text-slate-800 shadow-xl backdrop:bg-slate-900/50"
+		aria-labelledby="t-medidas"
+	>
+		<form method="dialog" id="form-medidas" class="flex max-h-[92dvh] flex-col" novalidate>
+			<header class="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3">
+				<div>
+					<h2 id="t-medidas" class="text-lg font-semibold text-slate-900">Editar a planta</h2>
+					<p class="text-xs text-slate-500">Em metros, por dentro das paredes. Arraste um cômodo para mudar de lugar e a bolinha do canto para mudar o tamanho.</p>
+				</div>
+				<button
+					value="fechar"
+					class="flex size-10 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100"
+					aria-label="Fechar"
+				>
+					<svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+						><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path></svg
+					>
+				</button>
+			</header>
+
+			<div class="grid min-h-0 flex-1 gap-5 overflow-y-auto p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+				<div class="flex flex-col items-center">
+					<div id="medidas-previa" class="flex w-full max-w-xs justify-center md:max-w-none"></div>
+					<p class="mt-2 text-sm text-slate-600">
+						Piso total: <strong id="medidas-total" class="tabular-nums text-slate-900"></strong>
+					</p>
+				</div>
+
+				<div>
+					<table class="w-full text-sm">
+						<thead>
+							<tr class="text-xs uppercase tracking-wide text-slate-500">
+								<th scope="col" class="pb-2 text-left font-medium">Cômodo</th>
+								<th scope="col" class="pb-2 text-left font-medium"><abbr title="Largura" class="no-underline sm:hidden">Larg.</abbr><span class="hidden sm:inline">Largura</span></th>
+								<th scope="col" class="pb-2"></th>
+								<th scope="col" class="pb-2 text-left font-medium"><abbr title="Comprimento" class="no-underline sm:hidden">Compr.</abbr><span class="hidden sm:inline">Comprimento</span></th>
+								<th scope="col" class="hidden pb-2 text-right font-medium sm:table-cell">Área</th>
+								<th scope="col" class="pb-2"><span class="sr-only">Remover</span></th>
+							</tr>
+						</thead>
+						<tbody id="linhas-medidas" set:html={htmlLinhasMedidas(planta)} />
+					</table>
+
+					<div class="mt-3 flex flex-wrap items-center gap-2">
+						<label class="sr-only" for="nova-categoria">Tipo do cômodo novo</label>
+						<select
+							id="nova-categoria"
+							class="min-h-10 rounded-lg border border-slate-300 bg-white px-2 text-sm"
+						>
+							{CATEGORIAS.map((c) => <option value={c.id}>{c.nome}</option>)}
+						</select>
+						<button
+							type="button"
+							id="adicionar-comodo"
+							class="flex min-h-10 items-center gap-1.5 rounded-lg border border-teal-300 bg-teal-50 px-3 text-sm font-medium text-teal-900 hover:bg-teal-100 disabled:opacity-40"
+						>
+							<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"
+								><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg
+							>
+							Adicionar cômodo
+						</button>
+					</div>
+					<p id="aviso-sobreposicao" class="mt-2 hidden text-xs font-medium text-rose-700" role="status"></p>
+
+					<label class="mt-4 flex items-center gap-3 text-sm">
+						<span class="whitespace-nowrap font-medium text-slate-900">Pé-direito</span>
+						<input
+							type="number"
+							name="pd"
+							value={planta.peDireito}
+							min="2.2"
+							max="4"
+							step="0.05"
+							inputmode="decimal"
+							class="w-20 rounded-lg border border-slate-300 px-2 py-1.5 tabular-nums invalid:border-rose-400"
+						/>
+						<span class="text-slate-500">m (altura do piso ao teto)</span>
+					</label>
+					<p class="mt-2 text-xs text-slate-500">Lados entre 0,5 e 15 m. Até 20 cômodos.</p>
+				</div>
+			</div>
+
+			<footer class="flex items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
+				<button type="button" id="medidas-padrao" class="min-h-11 text-sm text-slate-600 underline underline-offset-4">
+					Voltar à planta padrão
+				</button>
+				<button value="ok" class="min-h-11 rounded-xl bg-teal-600 px-5 text-sm font-semibold text-white hover:bg-teal-700">
+					Pronto
+				</button>
+			</footer>
+		</form>
+	</dialog>
+
+	<script type="application/json" id="dados-reforma" set:html={JSON.stringify(dados)} />
+	<script>
+		import '../scripts/calculadora.ts';
+	</script>
+</Layout>

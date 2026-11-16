@@ -1,0 +1,512 @@
+---
+// GUARDADO PARA DEPOIS: landing de pré-lançamento do classificado (vitrine dos vizinhos).
+// O "_" no nome tira a página do site. Antes de voltar: depoimentos reais com autorização,
+// lista VIP gravando de verdade e só prometer o que existir (chat, selo, sorteio).
+import Layout from '../layouts/Layout.astro';
+import Menu from '../components/Menu.astro';
+import { NOME_SITE } from '../site.ts';
+
+const features = [
+	{
+		step: '01',
+		title: 'Anuncie grátis',
+		description:
+			'Ofereça seu serviço ou produto aos vizinhos em segundos, sem taxas.',
+		cardClass: 'border-teal-200 bg-white',
+		stepClass: 'text-teal-200',
+	},
+	{
+		step: '02',
+		title: 'Converse direto',
+		description:
+			'Combine pagamento e entrega pelo chat do app, do seu jeito.',
+		cardClass: 'border-emerald-200 bg-emerald-50/60 ring-1 ring-emerald-100',
+		stepClass: 'text-emerald-200',
+	},
+	{
+		step: '03',
+		title: 'Quer mais visibilidade?',
+		description:
+			'Pague um destaque e apareça no topo da lista por uma semana.',
+		cardClass: 'border-slate-200 bg-slate-50',
+		stepClass: 'text-slate-300',
+	},
+];
+
+const testimonials = [
+	{
+		quote: 'Eu fazia bolo só para os amigos; agora vendo para três torres do meu condomínio.',
+		name: 'Maria',
+		role: 'Síndica',
+		accentClass: 'from-teal-50 to-white',
+	},
+	{
+		quote: 'Finalmente encontrei uma diarista de confiança que mora no meu bloco.',
+		name: 'João',
+		role: 'Morador',
+		accentClass: 'from-emerald-50 to-white',
+	},
+	{
+		quote: 'Consegui uma renda extra passeando com os cachorros dos vizinhos.',
+		name: 'Ana',
+		role: 'Pet sitter',
+		accentClass: 'from-cyan-50 to-white',
+	},
+	{
+		quote: 'Aluguei minha furadeira no fim de semana e fechei dois clientes novos no prédio ao lado.',
+		name: 'Carlos',
+		role: 'Morador',
+		accentClass: 'from-sky-50 to-white',
+	},
+	{
+		quote: 'O destaque semanal fez meu serviço de manicure lotar em três dias.',
+		name: 'Fernanda',
+		role: 'Autônoma',
+		accentClass: 'from-teal-50 to-white',
+	},
+];
+
+const plans = [
+	{
+		name: 'Eventual',
+		price: 'R$ 9,90',
+		period: '/semana',
+		benefits: ['Anunciar grátis sempre', 'Destaque por 7 dias'],
+		highlight: false,
+	},
+	{
+		name: 'Profissional',
+		price: 'R$ 24,90',
+		period: '/mês',
+		benefits: [
+			'Anunciar grátis sempre',
+			'Destaque por 30 dias',
+			'Selo de perfil verificado',
+		],
+		highlight: true,
+	},
+	{
+		name: 'Top do Condomínio',
+		price: 'R$ 49,90',
+		period: '/mês',
+		benefits: [
+			'Anunciar grátis sempre',
+			'Destaque permanente',
+			'Divulgação no grupo do condomínio',
+		],
+		highlight: false,
+	},
+];
+---
+
+<Layout bodyClass="bg-slate-950 text-slate-800 antialiased">
+	<Menu />
+	<main id="conteudo">
+		<section class="bg-gradient-to-b from-teal-50 via-white to-white">
+			<div class="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-2 md:items-center md:py-24">
+				<div>
+					<p class="anima-entrar inline-flex rounded-full bg-emerald-100 px-4 py-1 text-sm font-semibold text-emerald-800">
+						Pré-lançamento exclusivo
+					</p>
+					<h1 class="anima-entrar mt-5 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl" style="--atraso: 80ms">
+						O classificado do seu condomínio. Compre e venda com quem mora ao lado.
+					</h1>
+					<p class="anima-entrar mt-5 text-lg text-slate-600" style="--atraso: 160ms">
+						Serviços, produtos, freelas. Anuncie grátis para os seus vizinhos. Você só paga se quiser mais destaque.
+					</p>
+					<div class="anima-entrar mt-8 flex flex-wrap gap-4" style="--atraso: 240ms">
+						<a
+							href="#lista-vip"
+							class="aperta rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-md"
+						>
+							Entrar na lista VIP
+						</a>
+						<a
+							href="#planos"
+							class="aperta rounded-xl border border-teal-200 px-6 py-3 text-sm font-semibold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-50"
+						>
+							Ver planos de destaque
+						</a>
+					</div>
+				</div>
+				<div class="anima-entrar flex justify-center" style="--atraso: 200ms">
+					<div class="anima-flutuar relative w-[290px] rounded-[2.8rem] bg-gradient-to-b from-slate-100 to-slate-300 p-2.5 shadow-2xl ring-1 ring-slate-300/70">
+						<div class="absolute left-1/2 top-3 z-30 h-5 w-28 -translate-x-1/2 rounded-full bg-slate-900"></div>
+						<div class="absolute left-1/2 top-5 z-30 h-1 w-12 -translate-x-1/2 rounded-full bg-slate-700"></div>
+
+						<div class="relative overflow-hidden rounded-[2.3rem] bg-slate-50">
+							<div class="bg-slate-900 px-4 pb-3 pt-8 text-white">
+								<div class="flex items-center justify-between text-xs">
+									<span>09:41</span>
+									<span class="rounded-full bg-teal-500 px-2 py-0.5 font-semibold">{NOME_SITE}</span>
+									<span>100%</span>
+								</div>
+								<div class="mt-3 rounded-xl bg-slate-800 px-3 py-2">
+									<p class="text-[11px] text-slate-300">Condomínio Jardim Azul</p>
+									<p class="mt-1 text-sm font-semibold">+18 anúncios perto de você</p>
+								</div>
+							</div>
+
+							<div class="space-y-3 bg-white p-4">
+								<div class="rounded-xl border border-slate-200 p-3">
+									<div class="flex items-center justify-between">
+										<p class="text-sm font-semibold text-slate-900">Diarista · Bloco B</p>
+										<span class="text-xs font-semibold text-teal-600">Destaque</span>
+									</div>
+									<p class="mt-1 text-xs text-slate-500">R$ 160/dia · 2 vagas na semana</p>
+									<div class="mt-2 h-1.5 rounded-full bg-teal-100">
+										<div class="h-1.5 w-3/4 rounded-full bg-teal-500"></div>
+									</div>
+								</div>
+
+								<div class="rounded-xl border border-slate-200 p-3">
+									<p class="text-sm font-semibold text-slate-900">Bolos caseiros</p>
+									<p class="mt-1 text-xs text-slate-500">Entrega na portaria em até 30 min</p>
+									<div class="mt-3 rounded-lg bg-slate-50 p-2">
+										<svg viewBox="0 0 180 56" class="h-12 w-full" aria-hidden="true">
+											<path d="M2 43 L24 28 L44 38 L66 19 L86 24 L110 12 L134 22 L156 10 L178 16" fill="none" stroke="#14b8a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+										</svg>
+									</div>
+								</div>
+
+								<div class="rounded-xl bg-emerald-500 px-3 py-2 text-center text-sm font-semibold text-slate-900">
+									Publicar anúncio grátis
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-white py-16">
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="mx-auto max-w-3xl text-center" data-revelar>
+					<h2 class="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+						Tudo o que você precisa para movimentar a sua vizinhança.
+					</h2>
+					<p class="mt-4 text-base text-slate-600 md:text-lg">
+						A {NOME_SITE} foi criada para moradores que preferem resolver tudo perto de casa. Se outras plataformas
+						não foram feitas para o seu condomínio, aqui você anuncia, conversa e vende do seu jeito.
+					</p>
+				</div>
+
+				<div class="mt-12 grid gap-5 md:grid-cols-3" data-revelar-filhos>
+					{
+						features.map((feature) => (
+							<article class:list={['rounded-2xl border p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md', feature.cardClass]}>
+								<p class:list={['text-4xl font-extrabold leading-none', feature.stepClass]}>{feature.step}</p>
+								<h3 class="text-lg font-semibold text-slate-900">{feature.title}</h3>
+								<p class="mt-3 text-sm leading-6 text-slate-600">{feature.description}</p>
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-teal-50 py-16">
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="flex items-end justify-between gap-4" data-revelar>
+					<h2 class="text-3xl font-bold tracking-tight text-slate-900">Quem já vive essa ideia</h2>
+					<p class="hidden text-sm font-medium text-teal-700 md:block">Depoimentos reais da vizinhança</p>
+				</div>
+
+				<div class="relative mt-8" data-revelar style="--atraso: 120ms">
+					<div id="testimonials-slider" class="overflow-hidden rounded-2xl">
+						<div id="testimonials-track" class="flex transition-transform duration-500 ease-out">
+						{
+							testimonials.map((testimonial, index) => (
+								<blockquote
+									class:list={[
+										'relative min-w-full rounded-2xl border border-teal-100 bg-gradient-to-b p-6 shadow-sm',
+										testimonial.accentClass,
+									]}
+									data-testimonial-slide
+									aria-label={`Depoimento ${index + 1}`}
+								>
+									<p class="absolute right-5 top-2 text-7xl font-black leading-none text-teal-100">“</p>
+									<p class="relative pr-10 text-base leading-7 text-slate-700">“{testimonial.quote}”</p>
+									<footer class="mt-6 border-t border-teal-100 pt-4">
+										<p class="text-sm font-semibold text-slate-900">{testimonial.name}</p>
+										<p class="text-xs font-medium text-teal-700">{testimonial.role}</p>
+									</footer>
+								</blockquote>
+							))
+						}
+						</div>
+					</div>
+
+					<button
+						id="testimonials-prev"
+						type="button"
+						class="absolute -left-3 top-1/2 hidden -translate-y-1/2 rounded-full border border-teal-200 bg-white p-2 text-teal-700 shadow-sm transition hover:bg-teal-50 md:block"
+						aria-label="Depoimento anterior"
+					>
+						<svg viewBox="0 0 20 20" class="h-5 w-5" aria-hidden="true">
+							<path d="M12.5 4.5L7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+						</svg>
+					</button>
+
+					<button
+						id="testimonials-next"
+						type="button"
+						class="absolute -right-3 top-1/2 hidden -translate-y-1/2 rounded-full border border-teal-200 bg-white p-2 text-teal-700 shadow-sm transition hover:bg-teal-50 md:block"
+						aria-label="Próximo depoimento"
+					>
+						<svg viewBox="0 0 20 20" class="h-5 w-5" aria-hidden="true">
+							<path d="M7.5 4.5L13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+						</svg>
+					</button>
+
+					<div id="testimonials-dots" class="mt-5 flex items-center justify-center gap-2">
+						{
+							testimonials.map((_, index) => (
+								<button
+									type="button"
+									class="h-2.5 w-2.5 rounded-full bg-teal-200 transition data-[active=true]:w-6 data-[active=true]:bg-teal-600"
+									data-testimonial-dot
+									data-slide-index={index}
+									data-active={index === 0}
+									aria-label={`Ir para depoimento ${index + 1}`}
+								></button>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="planos" class="bg-white py-16">
+			<div class="mx-auto max-w-6xl px-6">
+				<h2 class="text-3xl font-bold tracking-tight text-slate-900" data-revelar>Planos de destaque</h2>
+				<p class="mt-3 max-w-2xl text-slate-600" data-revelar style="--atraso: 80ms">
+					Anunciar é sempre grátis. Escolha um plano só quando quiser ganhar mais visibilidade.
+				</p>
+				<div class="mt-8 grid gap-5 lg:grid-cols-3" data-revelar-filhos>
+					{
+						plans.map((plan) => (
+							<article
+								class:list={[
+									'rounded-2xl border p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md',
+									plan.highlight
+										? 'border-teal-300 bg-teal-50 ring-2 ring-teal-200'
+										: 'border-slate-200 bg-white',
+								]}
+							>
+								<h3 class="text-xl font-semibold text-slate-900">{plan.name}</h3>
+								<p class="mt-2">
+									<span class="text-3xl font-bold text-slate-900">{plan.price}</span>
+									<span class="text-slate-500">{plan.period}</span>
+								</p>
+								<ul class="mt-5 space-y-2 text-slate-700">
+									{plan.benefits.map((benefit) => <li>- {benefit}</li>)}
+								</ul>
+								<a
+									href="#lista-vip"
+									class="aperta mt-6 inline-block rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+								>
+									Quero este plano
+								</a>
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<section id="lista-vip" class="bg-slate-900 py-16 text-white">
+			<div class="mx-auto max-w-4xl px-6">
+				<h2 class="text-3xl font-bold tracking-tight" data-revelar>Garanta 3 meses de destaque grátis no lançamento!</h2>
+				<p class="mt-3 text-slate-300">
+					Seja um dos primeiros: cadastre-se e concorra a um ano de destaque.
+				</p>
+
+				<form id="vip-form" class="mt-8 grid gap-4 rounded-2xl bg-white/5 p-6" data-revelar style="--atraso: 100ms">
+					<div class="grid gap-4 md:grid-cols-2">
+						<label class="grid gap-2 text-sm">
+							<span>Nome *</span>
+							<input
+								required
+								name="name"
+								type="text"
+								class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-slate-300 focus:border-emerald-300 focus:outline-none"
+								placeholder="Seu nome"
+							/>
+						</label>
+						<label class="grid gap-2 text-sm">
+							<span>E-mail *</span>
+							<input
+								required
+								name="email"
+								type="email"
+								class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-slate-300 focus:border-emerald-300 focus:outline-none"
+								placeholder="voce@email.com"
+							/>
+						</label>
+					</div>
+
+					<label class="grid gap-2 text-sm">
+						<span>Nome do condomínio *</span>
+						<input
+							required
+							name="condo"
+							type="text"
+							class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-slate-300 focus:border-emerald-300 focus:outline-none"
+							placeholder="Ex.: Residencial Sol Nascente"
+						/>
+					</label>
+
+					<div class="grid gap-4 md:grid-cols-2">
+						<label class="grid gap-2 text-sm">
+							<span>Tipo (opcional)</span>
+							<select
+								name="type"
+								class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white focus:border-emerald-300 focus:outline-none"
+							>
+								<option value="" class="text-slate-900">Selecione</option>
+								<option value="vender" class="text-slate-900">Quero vender</option>
+								<option value="comprar" class="text-slate-900">Quero comprar</option>
+								<option value="ambos" class="text-slate-900">Ambos</option>
+							</select>
+						</label>
+						<label class="grid gap-2 text-sm">
+							<span>O que você oferece? (opcional)</span>
+							<input
+								name="offer"
+								type="text"
+								class="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white placeholder:text-slate-300 focus:border-emerald-300 focus:outline-none"
+								placeholder="Ex.: bolos caseiros, manutenção, aulas…"
+							/>
+						</label>
+					</div>
+
+					<fieldset class="space-y-2 rounded-lg border border-white/20 p-4">
+						<legend class="px-1 text-sm font-medium">
+							Quanto você pagaria por um anúncio em destaque por 1 semana?
+						</legend>
+						<div class="grid gap-2 text-sm md:grid-cols-2">
+							<label><input type="checkbox" name="priceResearch" value="5" class="mr-2" />R$ 5</label>
+							<label><input type="checkbox" name="priceResearch" value="10" class="mr-2" />R$ 10</label>
+							<label><input type="checkbox" name="priceResearch" value="20" class="mr-2" />R$ 20</label>
+							<label><input type="checkbox" name="priceResearch" value="30" class="mr-2" />R$ 30</label>
+							<label><input type="checkbox" name="priceResearch" value="nao-pagaria" class="mr-2" />Não pagaria</label>
+						</div>
+					</fieldset>
+
+					<label class="flex items-start gap-3 text-sm">
+						<input
+							required
+							type="checkbox"
+							name="consent"
+							class="mt-1 rounded border-white/20 bg-white/10"
+						/>
+						<span>Aceito receber e-mails sobre o lançamento. *</span>
+					</label>
+
+					<p id="form-error" class="hidden text-sm font-medium text-rose-300"></p>
+
+					<button
+						type="submit"
+						class="w-full rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-emerald-400 md:w-auto"
+					>
+						Entrar na lista VIP
+					</button>
+				</form>
+			</div>
+		</section>
+	</main>
+
+</Layout>
+
+<script>
+	const vipForm = document.getElementById('vip-form');
+	const formError = document.getElementById('form-error');
+
+	if (vipForm instanceof HTMLFormElement && formError) {
+		vipForm.addEventListener('submit', (event) => {
+			event.preventDefault();
+			formError.classList.add('hidden');
+			formError.textContent = '';
+
+			const requiredFields = ['name', 'email', 'condo'];
+			const hasEmptyRequired = requiredFields.some((fieldName) => {
+				const field = vipForm.elements.namedItem(fieldName);
+				return !(field instanceof HTMLInputElement) || !field.value.trim();
+			});
+
+			const consentField = vipForm.elements.namedItem('consent');
+			const hasConsent = consentField instanceof HTMLInputElement && consentField.checked;
+
+			if (hasEmptyRequired || !hasConsent) {
+				formError.textContent = 'Preencha os campos obrigatórios e marque a caixa de consentimento.';
+				formError.classList.remove('hidden');
+				return;
+			}
+
+			/* TODO: Integrar com Mailchimp/RD Station */
+			alert('Você está na lista VIP! Em breve receberá o seu acesso antecipado.');
+			vipForm.reset();
+		});
+	}
+
+	const testimonialsTrack = document.getElementById('testimonials-track');
+	const testimonialsSlider = document.getElementById('testimonials-slider');
+	const prevButton = document.getElementById('testimonials-prev');
+	const nextButton = document.getElementById('testimonials-next');
+	const dotButtons = Array.from(document.querySelectorAll('[data-testimonial-dot]'));
+
+	if (testimonialsTrack && testimonialsSlider && prevButton && nextButton && dotButtons.length > 0) {
+		const totalSlides = dotButtons.length;
+		let activeSlide = 0;
+		let autoplayId;
+		const AUTOPLAY_MS = 4200;
+
+		const updateSlider = (index) => {
+			activeSlide = (index + totalSlides) % totalSlides;
+			testimonialsTrack.style.transform = `translateX(-${activeSlide * 100}%)`;
+			dotButtons.forEach((dot, dotIndex) => {
+				dot.dataset.active = dotIndex === activeSlide ? 'true' : 'false';
+			});
+		};
+
+		const startAutoplay = () => {
+			autoplayId = window.setInterval(() => {
+				updateSlider(activeSlide + 1);
+			}, AUTOPLAY_MS);
+		};
+
+		const restartAutoplay = () => {
+			window.clearInterval(autoplayId);
+			startAutoplay();
+		};
+
+		prevButton.addEventListener('click', () => {
+			updateSlider(activeSlide - 1);
+			restartAutoplay();
+		});
+
+		nextButton.addEventListener('click', () => {
+			updateSlider(activeSlide + 1);
+			restartAutoplay();
+		});
+
+		dotButtons.forEach((dot) => {
+			dot.addEventListener('click', () => {
+				const index = Number(dot.dataset.slideIndex || 0);
+				updateSlider(index);
+				restartAutoplay();
+			});
+		});
+
+		testimonialsSlider.addEventListener('mouseenter', () => {
+			window.clearInterval(autoplayId);
+		});
+
+		testimonialsSlider.addEventListener('mouseleave', () => {
+			restartAutoplay();
+		});
+
+		startAutoplay();
+	}
+</script>

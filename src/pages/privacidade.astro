@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Menu from '../components/Menu.astro';
+import { linkWhatsapp, NOME_SITE, WHATSAPP_VISIVEL } from '../site.ts';
+
+const atualizada = '16 de novembro de 2026';
+---
+
+<Layout title={`Privacidade | ${NOME_SITE}`} description={`Como a ${NOME_SITE} trata os seus dados.`}>
+	<Menu />
+	<main id="conteudo" class="mx-auto max-w-3xl px-6 py-12">
+		<h1 class="anima-entrar text-3xl font-bold tracking-tight text-slate-900">Privacidade</h1>
+		<p class="anima-entrar mt-2 text-sm text-slate-500" style="--atraso: 60ms">Atualizada em {atualizada}.</p>
+
+		<div class="anima-entrar mt-8 space-y-6 leading-7 text-slate-700" style="--atraso: 120ms">
+			<section>
+				<h2 class="text-lg font-semibold text-slate-900">Resumo</h2>
+				<p class="mt-2">
+					A {NOME_SITE} não pede cadastro e não coleta dados pessoais pelas ferramentas. A calculadora funciona inteira no
+					seu navegador.
+				</p>
+			</section>
+
+			<section>
+				<h2 class="text-lg font-semibold text-slate-900">Calculadora de reforma</h2>
+				<p class="mt-2">
+					O que você marca (cômodos, serviços e medidas) fica no endereço da página, para poder compartilhar o resultado
+					por link. Nada disso é enviado para um servidor nosso. Quem recebe o link vê as mesmas escolhas.
+				</p>
+			</section>
+
+			<section>
+				<h2 class="text-lg font-semibold text-slate-900">Contato pelo WhatsApp</h2>
+				<p class="mt-2">
+					Se você me chamar pelo botão do WhatsApp, a conversa acontece no próprio WhatsApp. Uso o seu número e o que você
+					escrever só para responder. Se quiser que eu apague a conversa, é só pedir.
+				</p>
+			</section>
+
+			<section>
+				<h2 class="text-lg font-semibold text-slate-900">Cookies e medição</h2>
+				<p class="mt-2">
+					O site não usa cookies de propaganda nem de rastreamento. O serviço de hospedagem pode registrar dados técnicos de
+					acesso (como endereço IP e navegador) por segurança e funcionamento, como qualquer site.
+				</p>
+			</section>
+
+			<section>
+				<h2 class="text-lg font-semibold text-slate-900">Seus direitos</h2>
+				<p class="mt-2">
+					Pela Lei Geral de Proteção de Dados (LGPD), você pode pedir para saber, corrigir ou apagar dados seus que eu
+					tenha. Fale comigo pelo WhatsApp
+					<a href={linkWhatsapp('Olá! Tenho uma dúvida sobre privacidade no site.')} class="font-medium text-teal-700 underline underline-offset-4" target="_blank" rel="noopener">{WHATSAPP_VISIVEL}</a>.
+				</p>
+			</section>
+
+			<p class="text-sm text-slate-500">
+				Se o site passar a ter formulário ou cadastro, este texto será atualizado antes, explicando o que é coletado, para quê
+				e por quanto tempo.
+			</p>
+		</div>
+	</main>
+</Layout>

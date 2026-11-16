@@ -1,0 +1,206 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Menu from '../components/Menu.astro';
+import { plantaComum as planta } from '../data/planta.ts';
+import { precos } from '../data/precos.ts';
+import { regrasCondominio as regras } from '../data/regras-condominio.ts';
+import { aplicarPacote } from '../lib/calc/servicos.ts';
+import { calcularReforma } from '../lib/calc/reforma.ts';
+import { svgPlanta } from '../lib/ui/planta-svg.ts';
+import { linkWhatsapp, NOME_SITE } from '../site.ts';
+
+// Exemplo real, calculado no build: pacote básico na planta padrão.
+const selecao = aplicarPacote(planta, 'basico');
+const exemplo = calcularReforma({ planta, selecao }, { precos, regras });
+const reais = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+const totalExemplo = exemplo.total ? `${reais.format(exemplo.total.min)} a ${reais.format(exemplo.total.max)}` : '';
+const desenho = svgPlanta(planta, { interativo: false, classe: 'estatica h-auto w-full' }).replaceAll(
+	'class="comodo ',
+	'data-marcado="true" class="comodo ',
+);
+const linkExemplo = '/simulador-reforma?' + new URLSearchParams(
+	Object.fromEntries(Object.entries(selecao).map(([k, v]) => [k, v.join(',')])),
+).toString().replaceAll('%2C', ',');
+
+const ferramentas = [
+	{
+		titulo: 'Calculadora de reforma',
+		texto: 'Marque cômodos e serviços na planta e veja quanto material comprar e quanto deve custar a mão de obra.',
+		itens: ['Piso, rodapé, pintura, gesso, revestimento, bancada e box', 'Planta editável: medidas, cômodos novos, arrastar', 'Link para mandar ao pedreiro ou à família'],
+		href: '/simulador-reforma',
+		acao: 'Abrir a calculadora',
+	},
+	{
+		titulo: 'Simulador de juros de obra',
+		texto: 'Entenda por que a parcela sobe durante a obra e quanto ela deve chegar até a entrega das chaves.',
+		itens: ['Curva mês a mês até 100% da obra', 'Explicação em linguagem simples'],
+		emBreve: true,
+	},
+	{
+		titulo: 'Guia de prestadores',
+		texto: 'Profissionais indicados por quem já contratou, com fotos dos serviços e faixa de preço.',
+		itens: ['Indicações verificadas', 'Contato direto pelo WhatsApp'],
+		emBreve: true,
+	},
+];
+
+const passos = [
+	{ titulo: 'Marque na planta', texto: 'Toque nos cômodos e escolha os serviços, ou use um pacote pronto para o apartamento todo.' },
+	{ titulo: 'Ajuste ao seu apê', texto: 'Mude medidas, adicione ou remova cômodos e arraste para deixar a planta igual à sua.' },
+	{ titulo: 'Compartilhe', texto: 'O resultado vai num link: mande para quem vai fazer o orçamento e compare.' },
+];
+---
+
+<Layout
+	title={`${NOME_SITE} | Ferramentas para reforma de apartamento`}
+	description="Calculadora grátis de reforma de apartamento: quantidades de material e faixa de preço de mão de obra em Salvador e região."
+>
+	<Menu />
+	<main id="conteudo">
+		<!-- Topo -->
+		<section class="bg-gradient-to-b from-teal-50 via-white to-white">
+			<div class="mx-auto grid max-w-6xl gap-12 px-6 py-14 md:grid-cols-[1.1fr_1fr] md:items-center md:py-20">
+				<div>
+					<p class="anima-entrar inline-flex rounded-full bg-emerald-100 px-4 py-1 text-sm font-semibold text-emerald-800">
+						Grátis · sem cadastro
+					</p>
+					<h1 class="anima-entrar mt-5 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl" style="--atraso: 80ms">
+						Quanto vai custar a reforma do seu apartamento?
+					</h1>
+					<p class="anima-entrar mt-5 text-lg text-slate-600" style="--atraso: 160ms">
+						Marque os cômodos e os serviços na planta e veja na hora quanto material comprar e uma faixa de preço de mão de
+						obra em Salvador e região.
+					</p>
+					<div class="anima-entrar mt-8 flex flex-wrap gap-3" style="--atraso: 240ms">
+						<a
+							href="/simulador-reforma"
+							class="aperta rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-md"
+						>
+							Calcular minha reforma
+						</a>
+						<a
+							href={linkWhatsapp()}
+							target="_blank"
+							rel="noopener"
+							class="aperta rounded-xl border border-teal-200 px-6 py-3 text-sm font-semibold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-50"
+						>
+							Tirar uma dúvida no WhatsApp
+						</a>
+					</div>
+				</div>
+
+				<!-- Exemplo real da calculadora -->
+				<a
+					href={linkExemplo}
+					class="anima-entrar group block rounded-3xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/5 transition hover:-translate-y-1 hover:shadow-2xl"
+					style="--atraso: 200ms"
+					aria-label="Ver este exemplo na calculadora"
+				>
+					<div class="flex items-center justify-between gap-3">
+						<p class="text-sm font-semibold text-slate-900">Exemplo: pacote básico</p>
+						<span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-600">2 quartos · ~40 m²</span>
+					</div>
+					<div class="anima-flutuar mx-auto mt-4 max-w-[15rem]" set:html={desenho} />
+					<div class="mt-4 rounded-2xl bg-teal-600 px-4 py-3 text-white">
+						<p class="text-[11px] font-medium uppercase tracking-wide text-teal-100">Total estimado de mão de obra</p>
+						<p class="text-xl font-bold tabular-nums">{totalExemplo}</p>
+					</div>
+					<p class="mt-3 text-xs text-slate-500 group-hover:text-teal-700">Piso, rodapé e pintura no apartamento todo · ver na calculadora →</p>
+				</a>
+			</div>
+		</section>
+
+		<!-- Ferramentas -->
+		<section class="bg-white py-16">
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="max-w-2xl" data-revelar>
+					<h2 class="text-3xl font-bold tracking-tight text-slate-900">Ferramentas para quem mora em condomínio</h2>
+					<p class="mt-3 text-slate-600">Feitas para apartamento: começam pela reforma e vão crescendo.</p>
+				</div>
+				<div class="mt-10 grid gap-5 md:grid-cols-3" data-revelar-filhos>
+					{
+						ferramentas.map((f) => (
+							<article
+								class:list={[
+									'flex flex-col rounded-2xl border p-6 transition hover:-translate-y-1 hover:shadow-md',
+									f.emBreve ? 'border-slate-200 bg-slate-50' : 'border-teal-200 bg-white shadow-sm ring-1 ring-teal-100',
+								]}
+							>
+								<div class="flex items-start justify-between gap-3">
+									<h3 class="text-lg font-semibold text-slate-900">{f.titulo}</h3>
+									{f.emBreve ? (
+										<span class="shrink-0 rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-600">em breve</span>
+									) : (
+										<span class="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">disponível</span>
+									)}
+								</div>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{f.texto}</p>
+								<ul class="mt-4 space-y-1.5 text-sm text-slate-700">
+									{f.itens.map((i) => (
+										<li class="flex gap-2">
+											<span class:list={['mt-2 size-1.5 shrink-0 rounded-full', f.emBreve ? 'bg-slate-400' : 'bg-teal-500']} />
+											{i}
+										</li>
+									))}
+								</ul>
+								{f.href && (
+									<a
+										href={f.href}
+										class="aperta mt-6 inline-flex w-fit rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+									>
+										{f.acao}
+									</a>
+								)}
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Como funciona -->
+		<section class="bg-teal-50 py-16">
+			<div class="mx-auto max-w-6xl px-6">
+				<h2 class="text-3xl font-bold tracking-tight text-slate-900" data-revelar>Como funciona a calculadora</h2>
+				<ol class="mt-10 grid gap-8 md:grid-cols-3" data-revelar-filhos>
+					{
+						passos.map((p, i) => (
+							<li class="relative rounded-2xl border border-teal-100 bg-white p-6 pt-8 shadow-sm">
+								<span
+									class="absolute -left-3 -top-4 flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-lg font-extrabold text-white shadow-md shadow-teal-900/25 ring-[3px] ring-white"
+									aria-hidden="true"
+								>
+									{i + 1}
+								</span>
+								<h3 class="font-semibold text-slate-900">{p.titulo}</h3>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{p.texto}</p>
+							</li>
+						))
+					}
+				</ol>
+				<p class="mt-8 max-w-3xl text-sm text-slate-600" data-revelar>
+					Os preços são referência para Salvador e região, de uma busca rápida na internet, e são revistos de tempos em tempos.
+					Não são cotação: use o resultado para conversar e comparar orçamentos.
+				</p>
+			</div>
+		</section>
+
+		<!-- Contato -->
+		<section class="bg-slate-900 py-16 text-white">
+			<div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 md:flex-row md:items-center md:justify-between" data-revelar>
+				<div class="max-w-xl">
+					<h2 class="text-3xl font-bold tracking-tight">Quer ajuda com a sua reforma?</h2>
+					<p class="mt-3 text-slate-300">Dúvida, sugestão ou achou um preço diferente na sua região? Me chama no WhatsApp.</p>
+				</div>
+				<a
+					href={linkWhatsapp()}
+					target="_blank"
+					rel="noopener"
+					class="aperta inline-flex w-fit items-center rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-emerald-400"
+				>
+					Falar no WhatsApp
+				</a>
+			</div>
+		</section>
+	</main>
+</Layout>

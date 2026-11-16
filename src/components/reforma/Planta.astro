@@ -1,0 +1,21 @@
+---
+import type { Planta } from '../../lib/calc/tipos.ts';
+import { svgPlanta } from '../../lib/ui/planta-svg.ts';
+
+interface Props {
+	planta: Planta;
+	class?: string;
+}
+
+const { planta, class: classe } = Astro.props;
+// Desenho gerado a partir das medidas (src/lib/calc/layout.ts). O script da página
+// redesenha no mesmo contêiner quando a pessoa edita medidas ou espelha.
+const svg = svgPlanta(planta, { classe: 'block h-auto min-h-0 w-full max-w-sm lg:h-full lg:max-w-none lg:flex-1' });
+---
+
+<figure class:list={['planta flex min-h-0 min-w-0 flex-col items-center', classe]}>
+	<div id="planta-desenho" class="flex min-h-0 w-full flex-1 justify-center" set:html={svg} />
+	<figcaption id="planta-legenda" class="mt-1 text-[11px] text-slate-500">
+		Planta típica de 2 quartos, ~40 m²; serve de base para apês desse tamanho.
+	</figcaption>
+</figure>

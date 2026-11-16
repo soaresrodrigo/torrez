@@ -1,0 +1,22 @@
+{
+  "id": "comum",
+  "nome": "Apartamento de 2 quartos, cerca de 40 m²",
+  "peDireito": 2.6,
+  "comodos": [
+    { "id": "q1", "nome": "Dormitório 01", "categoria": "quarto", "x": 0, "y": 0, "largura": 2.4, "comprimento": 3.1, "tipo": "seca", "portas": 1, "janelas": 1, "ladoAberto": 0 },
+    { "id": "q2", "nome": "Dormitório 02", "categoria": "quarto", "x": 3.5, "y": 0, "largura": 2.0, "comprimento": 3.05, "tipo": "seca", "portas": 1, "janelas": 1, "ladoAberto": 0 },
+    { "id": "sala", "nome": "Estar/jantar", "categoria": "sala", "x": 0, "y": 3.1, "largura": 2.4, "comprimento": 4.05, "tipo": "seca", "portas": 1, "janelas": 1, "ladoAberto": 0 },
+    { "id": "circ", "nome": "Circulação", "categoria": "circulacao", "x": 2.4, "y": 2.1, "largura": 0.9, "comprimento": 3.3, "tipo": "seca", "portas": 0, "janelas": 0, "ladoAberto": 0 },
+    { "id": "coz", "nome": "Cozinha/serviço", "categoria": "cozinha", "x": 3.5, "y": 3.05, "largura": 1.7, "comprimento": 3.75, "tipo": "molhada", "portas": 0, "janelas": 1, "ladoAberto": 0 },
+    { "id": "ban", "nome": "Banho", "categoria": "banheiro", "x": 2.4, "y": 0, "largura": 1.1, "comprimento": 2.1, "tipo": "molhada", "portas": 1, "janelas": 1, "ladoAberto": 0 }
+  ],
+  "aberturasPadrao": {
+    "porta": { "largura": 0.8, "altura": 2.1 },
+    "janela": { "largura": 1.2, "altura": 1.0 }
+  },
+  "provisorio": [
+    "Portas e janelas por cômodo são um palpite: conferir na planta e na vistoria.",
+    "Janela padrão 1,20 × 1,00 m é estimativa: medir na vistoria.",
+    "Lados abertos (sala, circulação, cozinha) ainda não marcados: ladoAberto = 0 em todos."
+  ]
+}

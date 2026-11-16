@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+import Rodape from '../components/Rodape.astro';
+import { NOME_SITE } from '../site.ts';
+
+interface Props {
+	title?: string;
+	description?: string;
+	bodyClass?: string;
+}
+
+const {
+	title = `${NOME_SITE} | Ferramentas para reforma de apartamento`,
+	description,
+	bodyClass = 'bg-white text-slate-800 antialiased',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		{description && <meta property="og:description" content={description} />}
+		<meta property="og:title" content={title} />
+		<meta property="og:locale" content="pt_BR" />
+		<!-- Marca que o JS está ativo: só então elementos [data-revelar] começam escondidos. -->
+		<script is:inline>document.documentElement.classList.add('js');</script>
+	</head>
+	<body class={bodyClass}>
+		<slot />
+		<Rodape />
+		<script>
+			// Revela [data-revelar] quando entra na tela. Filhos de [data-revelar-filhos]
+			// entram um depois do outro.
+			for (const pai of document.querySelectorAll<HTMLElement>('[data-revelar-filhos]')) {
+				[...pai.children].forEach((filho, i) => {
+					(filho as HTMLElement).dataset.revelar = '';
+					(filho as HTMLElement).style.setProperty('--atraso', `${i * 90}ms`);
+				});
+			}
+			const alvos = document.querySelectorAll<HTMLElement>('[data-revelar]');
+			if ('IntersectionObserver' in window) {
+				const obs = new IntersectionObserver(
+					(entradas) => {
+						for (const e of entradas) {
+							if (!e.isIntersecting) continue;
+							e.target.classList.add('revelado');
+							obs.unobserve(e.target);
+						}
+					},
+					{ rootMargin: '0px 0px -8% 0px', threshold: 0.1 },
+				);
+				alvos.forEach((a) => obs.observe(a));
+			} else {
+				alvos.forEach((a) => a.classList.add('revelado'));
+			}
+		</script>
+	</body>
+</html>
