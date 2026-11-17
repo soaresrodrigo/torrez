@@ -1,6 +1,7 @@
 import { CATEGORIAS, categoriaPorId } from './categorias.ts';
 import { LIMITES } from './edicao.ts';
 import { normalizarSelecao, PERDA_PADRAO } from './reforma.ts';
+import { EXTRAS_ID } from './servicos.ts';
 import type { Categoria, Comodo, Planta, Selecao } from './tipos.ts';
 
 export interface EstadoCalculadora {
@@ -14,7 +15,7 @@ export interface EstadoCalculadora {
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const ID_VALIDO = /^[a-z0-9]{1,8}$/;
-const RESERVADOS = new Set(['p', 'pd', 'perda', 'espelhada']);
+const RESERVADOS = new Set(['p', 'pd', 'perda', 'espelhada', EXTRAS_ID]);
 
 /** Campos que definem a forma da planta (o que vai no link). */
 const assinatura = (c: Comodo) => [c.id, c.categoria, r2(c.x), r2(c.y), r2(c.largura), r2(c.comprimento), c.nome];
@@ -79,9 +80,9 @@ export function serializarEstado(padrao: Planta, estado: EstadoCalculadora): str
 	const params = new URLSearchParams();
 	if (estado.espelhada) params.set('espelhada', '1');
 	const selecao = normalizarSelecao(planta, estado.selecao);
-	for (const comodo of planta.comodos) {
-		const ids = selecao[comodo.id];
-		if (ids?.length) params.set(comodo.id, ids.join(','));
+	for (const chave of [...planta.comodos.map((c) => c.id), EXTRAS_ID]) {
+		const ids = selecao[chave];
+		if (ids?.length) params.set(chave, ids.join(','));
 	}
 	const pct = Math.round(estado.perda * 100);
 	if (pct !== Math.round(PERDA_PADRAO * 100)) params.set('perda', String(pct));
@@ -106,9 +107,9 @@ export function lerEstado(padrao: Planta, query: string): EstadoCalculadora {
 	}
 
 	const selecao: Selecao = {};
-	for (const comodo of planta.comodos) {
-		const valor = params.get(comodo.id);
-		if (valor) selecao[comodo.id] = valor.split(',').filter(Boolean);
+	for (const chave of [...planta.comodos.map((c) => c.id), EXTRAS_ID]) {
+		const valor = params.get(chave);
+		if (valor) selecao[chave] = valor.split(',').filter(Boolean);
 	}
 	const pct = Number(params.get('perda'));
 	const perda = Number.isFinite(pct) && pct >= 0 && pct <= 50 && params.has('perda') ? pct / 100 : PERDA_PADRAO;

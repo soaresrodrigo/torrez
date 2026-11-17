@@ -1,5 +1,5 @@
 import { arred, medidasComodo } from './medidas.ts';
-import { SERVICOS, servicoSeAplica } from './servicos.ts';
+import { EXTRAS_ID, SERVICOS, servicoSeAplica } from './servicos.ts';
 import type { ServicoDef } from './servicos.ts';
 import type { Planta, PrecoReferencia, RegraCondominio, Selecao, UnidadePreco } from './tipos.ts';
 
@@ -79,6 +79,9 @@ export function normalizarSelecao(planta: Planta, selecao: Selecao): Selecao {
 		}
 		if (validos.length) limpa[comodo.id] = validos;
 	}
+	// Extras do apartamento inteiro: só os que têm escopo "apartamento".
+	const extras = (selecao[EXTRAS_ID] ?? []).filter((id) => SERVICOS.some((s) => s.id === id && s.escopo === 'apartamento'));
+	if (extras.length) limpa[EXTRAS_ID] = [...new Set(extras)];
 	return limpa;
 }
 
@@ -95,9 +98,14 @@ export function calcularReforma(entrada: EntradaReforma, dados: DadosReforma): R
 	const itens: ItemQuantidade[] = [];
 	for (const servico of SERVICOS) {
 		if (!marcados.has(servico.id)) continue;
-		const porComodo = planta.comodos
-			.filter((c) => selecao[c.id]?.includes(servico.id))
-			.map((c) => ({ comodo: c.id, nome: c.nome, quantidade: quantidadeBase(servico, planta, c.id) }));
+		const porComodo =
+			servico.escopo === 'apartamento'
+				? selecao[EXTRAS_ID]?.includes(servico.id)
+					? [{ comodo: EXTRAS_ID, nome: 'Apartamento todo', quantidade: 1 }]
+					: []
+				: planta.comodos
+						.filter((c) => selecao[c.id]?.includes(servico.id))
+						.map((c) => ({ comodo: c.id, nome: c.nome, quantidade: quantidadeBase(servico, planta, c.id) }));
 		const quantidade = arred(porComodo.reduce((s, p) => s + p.quantidade, 0));
 		const comPerda = servico.perda ? arred(quantidade * (1 + perda)) : quantidade;
 		itens.push({ servico: servico.id, nome: servico.nome, unidade: servico.unidade, porComodo, quantidade, comPerda });

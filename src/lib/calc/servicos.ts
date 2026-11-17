@@ -1,7 +1,10 @@
 import type { Categoria, Comodo, Planta, Selecao, TipoComodo } from './tipos.ts';
 
-/** Qual medida do cômodo o serviço usa. "unidade" = 1 por cômodo. */
+/** Qual medida do cômodo o serviço usa. "unidade" = 1 por cômodo (ou 1 por apartamento, nos extras). */
 export type BaseServico = 'piso' | 'teto' | 'paredeLiquida' | 'rodape' | 'unidade';
+
+/** Chave da seleção que guarda os extras do apartamento inteiro (não é um cômodo). */
+export const EXTRAS_ID = 'apartamento';
 
 export interface ServicoDef {
 	id: string;
@@ -14,6 +17,8 @@ export interface ServicoDef {
 	tipos?: TipoComodo[];
 	/** categorias de cômodo onde o serviço existe (tem prioridade sobre `tipos`) */
 	categorias?: Categoria[];
+	/** `comodo` (padrão) = marcado em cada cômodo; `apartamento` = uma vez só, nos extras */
+	escopo?: 'comodo' | 'apartamento';
 	/** `servico` em src/data/precos.ts que dá a faixa de preço deste serviço */
 	precoRef?: string;
 	/** serviços que não podem ser marcados junto no mesmo cômodo (ex.: dois tipos de piso) */
@@ -28,7 +33,7 @@ export const SERVICOS: ServicoDef[] = [
 		unidade: 'm²',
 		perda: true,
 		precoRef: 'piso-assentamento',
-		exclui: ['piso-vinilico'],
+		exclui: ['piso-vinilico', 'confeccao-banheiro'],
 	},
 	{
 		// Cômodos secos e cozinha (com modelo colado ou SPC). Banheiro, serviço e varanda ficam de fora.
@@ -68,6 +73,7 @@ export const SERVICOS: ServicoDef[] = [
 		perda: true,
 		tipos: ['molhada'],
 		precoRef: 'revestimento-assentamento',
+		exclui: ['confeccao-banheiro'],
 	},
 	{ id: 'bancada', nome: 'Bancada da cozinha', base: 'unidade', unidade: 'un', perda: false, categorias: ['cozinha'], precoRef: 'bancada-granito' },
 	{
@@ -79,6 +85,34 @@ export const SERVICOS: ServicoDef[] = [
 		categorias: ['banheiro'],
 		precoRef: 'box-vidro',
 	},
+	{
+		// Qualquer cômodo com piso: útil em áreas molhadas antes de trocar o revestimento.
+		id: 'remocao-piso',
+		nome: 'Remoção de piso',
+		base: 'piso',
+		unidade: 'm²',
+		perda: false,
+		precoRef: 'remocao-piso',
+	},
+	{
+		// Pacote de banheiro do orçamento de referência: piso, revestimento, soleira, vaso e bancada juntos.
+		id: 'confeccao-banheiro',
+		nome: 'Confecção do banheiro (piso, revestimento, soleira, vaso, bancada)',
+		base: 'unidade',
+		unidade: 'un',
+		perda: false,
+		categorias: ['banheiro'],
+		precoRef: 'confeccao-banheiro',
+		exclui: ['piso', 'piso-vinilico', 'revestimento-parede'],
+	},
+	// Extras do apartamento inteiro: marcados uma vez, no slide "Apartamento todo".
+	{ id: 'eletrica', nome: 'Instalação elétrica (LEDs, tomadas, luminária)', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'eletrica-apto' },
+	{ id: 'hidraulica', nome: 'Instalação hidráulica (chuveiro, pia, lavanderia)', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'hidraulica-apto' },
+	{ id: 'gas', nome: 'Instalação de gás', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'gas-apto' },
+	{ id: 'art', nome: 'ART (responsabilidade técnica)', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'art-apto' },
+	{ id: 'bota-fora', nome: 'Bota-fora de entulho', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'bota-fora-apto' },
+	{ id: 'transporte', nome: 'Transporte de material', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'transporte-apto' },
+	{ id: 'limpeza-final', nome: 'Limpeza final', base: 'unidade', unidade: 'un', perda: false, escopo: 'apartamento', precoRef: 'limpeza-final-apto' },
 ];
 
 export function servicoPorId(id: string): ServicoDef | undefined {
@@ -86,6 +120,7 @@ export function servicoPorId(id: string): ServicoDef | undefined {
 }
 
 export function servicoSeAplica(servico: ServicoDef, comodo: Comodo): boolean {
+	if (servico.escopo === 'apartamento') return false;
 	if (servico.categorias) return servico.categorias.includes(comodo.categoria);
 	if (servico.tipos) return servico.tipos.includes(comodo.tipo);
 	return true;
@@ -93,6 +128,11 @@ export function servicoSeAplica(servico: ServicoDef, comodo: Comodo): boolean {
 
 export function servicosDoComodo(comodo: Comodo): ServicoDef[] {
 	return SERVICOS.filter((s) => servicoSeAplica(s, comodo));
+}
+
+/** Serviços que valem para o apartamento inteiro (slide "Apartamento todo"). */
+export function servicosDoApartamento(): ServicoDef[] {
+	return SERVICOS.filter((s) => s.escopo === 'apartamento');
 }
 
 export interface Pacote {

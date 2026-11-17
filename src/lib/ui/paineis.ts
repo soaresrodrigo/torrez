@@ -1,7 +1,7 @@
 import { CATEGORIAS } from '../calc/categorias.ts';
 import { LIMITES } from '../calc/edicao.ts';
 import { medidasComodo } from '../calc/medidas.ts';
-import { servicosDoComodo } from '../calc/servicos.ts';
+import { EXTRAS_ID, servicosDoApartamento, servicosDoComodo, type ServicoDef } from '../calc/servicos.ts';
 import type { Planta } from '../calc/tipos.ts';
 
 // HTML dos slides de serviços e das linhas do modal de medidas, gerado a partir da planta.
@@ -13,40 +13,52 @@ const esc = (s: string) =>
 	s.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
 const UN = { 'm²': 'm²', m: 'm', un: '' } as const;
 
-/** Um <fieldset> por cômodo, com os serviços possíveis nele. Só o `ativo` fica visível. */
-export function htmlSlides(planta: Planta, ativo = 0): string {
-	const total = planta.comodos.length;
-	return planta.comodos
-		.map((c, i) => {
-			const med = medidasComodo(c, planta);
-			const servicos = servicosDoComodo(c)
-				.map((s) => {
-					const dica = s.base === 'unidade' ? '1 un.' : `${fmt.format(med[s.base])} ${UN[s.unidade]}`;
-					return (
-						`<label class="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1.5 text-sm hover:bg-slate-50">` +
-						`<input type="checkbox" name="${esc(c.id)}" value="${s.id}" class="size-5 shrink-0 accent-teal-600" />` +
-						`<span class="flex-1 leading-tight">${esc(s.nome)}</span>` +
-						`<span class="text-xs tabular-nums text-slate-500">${dica}</span></label>`
-					);
-				})
-				.join('');
-			return (
-				`<fieldset data-painel="${esc(c.id)}" role="group" aria-roledescription="slide" ` +
-				`aria-label="${esc(c.nome)}, ${i + 1} de ${total}" class="min-w-0${i === ativo ? '' : ' hidden'}">` +
-				`<legend class="contents"><span class="block text-sm font-semibold text-slate-900">${esc(c.nome)} ` +
-				`<span class="font-normal text-slate-500">· ${fmt.format(med.piso)} m²</span></span></legend>` +
-				`<div class="mt-1 grid gap-x-3 sm:grid-cols-2">${servicos}</div></fieldset>`
-			);
-		})
-		.join('');
+/** Uma linha de serviço: caixa de marcar, nome e medida. */
+function caixa(campo: string, s: ServicoDef, dica: string): string {
+	return (
+		`<label class="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg px-1.5 text-sm hover:bg-slate-50">` +
+		`<input type="checkbox" name="${esc(campo)}" value="${s.id}" class="size-5 shrink-0 accent-teal-600" />` +
+		`<span class="flex-1 leading-tight">${esc(s.nome)}</span>` +
+		`<span class="text-xs tabular-nums text-slate-500">${dica}</span></label>`
+	);
 }
 
-/** Bolinhas de navegação entre os slides. */
+/**
+ * Um <fieldset> por cômodo, mais um último para os extras do apartamento inteiro.
+ * Só o `ativo` fica visível.
+ */
+export function htmlSlides(planta: Planta, ativo = 0): string {
+	const total = planta.comodos.length + 1;
+	const comodos = planta.comodos.map((c, i) => {
+		const med = medidasComodo(c, planta);
+		const servicos = servicosDoComodo(c)
+			.map((s) => caixa(c.id, s, s.base === 'unidade' ? '1 un.' : `${fmt.format(med[s.base])} ${UN[s.unidade]}`))
+			.join('');
+		return (
+			`<fieldset data-painel="${esc(c.id)}" role="group" aria-roledescription="slide" ` +
+			`aria-label="${esc(c.nome)}, ${i + 1} de ${total}" class="min-w-0${i === ativo ? '' : ' hidden'}">` +
+			`<legend class="contents"><span class="block text-sm font-semibold text-slate-900">${esc(c.nome)} ` +
+			`<span class="font-normal text-slate-500">· ${fmt.format(med.piso)} m²</span></span></legend>` +
+			`<div class="mt-1 grid gap-x-3 sm:grid-cols-2">${servicos}</div></fieldset>`
+		);
+	});
+	const extras = servicosDoApartamento().map((s) => caixa(EXTRAS_ID, s, '1 un.')).join('');
+	const slideExtras =
+		`<fieldset data-painel="${EXTRAS_ID}" role="group" aria-roledescription="slide" ` +
+		`aria-label="Apartamento todo, ${total} de ${total}" class="min-w-0${total - 1 === ativo ? '' : ' hidden'}">` +
+		`<legend class="contents"><span class="block text-sm font-semibold text-slate-900">Apartamento todo ` +
+		`<span class="font-normal text-slate-500">· valem uma vez</span></span></legend>` +
+		`<div class="mt-1 grid gap-x-3 sm:grid-cols-2">${extras}</div></fieldset>`;
+	return [...comodos, slideExtras].join('');
+}
+
+/** Bolinhas de navegação entre os slides (uma por cômodo e a dos extras). */
 export function htmlPontos(planta: Planta): string {
-	return planta.comodos
+	const nomes = [...planta.comodos.map((c) => c.nome), 'Apartamento todo'];
+	return nomes
 		.map(
-			(c, i) =>
-				`<button type="button" role="tab" data-ir="${i}" aria-label="${esc(c.nome)}" title="${esc(c.nome)}" ` +
+			(nome, i) =>
+				`<button type="button" role="tab" data-ir="${i}" aria-label="${esc(nome)}" title="${esc(nome)}" ` +
 				`class="flex size-6 items-center justify-center"><span class="size-2 rounded-full bg-slate-300 transition-colors"></span></button>`,
 		)
 		.join('');

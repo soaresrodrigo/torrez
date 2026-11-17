@@ -14,6 +14,7 @@ import {
 	redimensionarComodo,
 	removerComodo,
 	renomearComodo,
+	EXTRAS_ID,
 	SERVICOS,
 	serializarEstado,
 	sobreposicoes,
@@ -72,6 +73,8 @@ function animar(el: Element | undefined, classe: string) {
 
 const faixa = (min: number, max: number) => (min === max ? reais.format(min) : `${reais.format(min)} a ${reais.format(max)}`);
 const paineis = () => [...slides.querySelectorAll<HTMLFieldSetElement>('[data-painel]')];
+// Um slide por cômodo e o último para os extras do apartamento inteiro.
+const slideIds = () => [...planta.comodos.map((c) => c.id), EXTRAS_ID];
 const pontos = () => [...pontosEl.querySelectorAll<HTMLButtonElement>('[data-ir]')];
 
 // ---------- form ↔ estado ----------
@@ -79,9 +82,9 @@ const pontos = () => [...pontosEl.querySelectorAll<HTMLButtonElement>('[data-ir]
 function lerSelecao(): Selecao {
 	const fd = new FormData(form);
 	const selecao: Selecao = {};
-	for (const c of planta.comodos) {
-		const ids = fd.getAll(c.id).map(String);
-		if (ids.length) selecao[c.id] = ids;
+	for (const id of slideIds()) {
+		const ids = fd.getAll(id).map(String);
+		if (ids.length) selecao[id] = ids;
 	}
 	return selecao;
 }
@@ -120,8 +123,8 @@ function definirPlanta(nova: Planta, opcoes: { linhas?: boolean; selecao?: Selec
 	const selecao = opcoes.selecao ?? lerSelecao();
 	const idAtivo = paineis()[ativo]?.dataset.painel;
 	planta = nova;
-	const i = planta.comodos.findIndex((c) => c.id === idAtivo);
-	ativo = i >= 0 ? i : Math.min(ativo, planta.comodos.length - 1);
+	const i = idAtivo ? slideIds().indexOf(idAtivo) : -1;
+	ativo = i >= 0 ? i : Math.min(ativo, slideIds().length - 1);
 	slides.innerHTML = htmlSlides(planta, ativo);
 	pontosEl.innerHTML = htmlPontos(planta);
 	marcarSelecao(selecao);
@@ -150,7 +153,7 @@ function marcarPlanta(selecao: Selecao) {
 		path.dataset.marcado = String(Boolean(selecao[path.dataset.comodo!]?.length));
 	}
 	pontos().forEach((p, i) => {
-		const marcado = Boolean(selecao[planta.comodos[i]?.id]?.length);
+		const marcado = Boolean(selecao[slideIds()[i]]?.length);
 		p.firstElementChild!.classList.toggle('bg-teal-500', marcado);
 	});
 }
@@ -160,7 +163,7 @@ function marcarPlanta(selecao: Selecao) {
 let ativo = 0;
 
 function irPara(indice: number, foco = false) {
-	const total = planta.comodos.length;
+	const total = slideIds().length;
 	const anterior = ativo;
 	ativo = (indice + total) % total;
 	marcarAtivo();
@@ -169,15 +172,15 @@ function irPara(indice: number, foco = false) {
 }
 
 function marcarAtivo() {
-	const id = planta.comodos[ativo]?.id;
+	const id = slideIds()[ativo];
 	paineis().forEach((p, i) => p.classList.toggle('hidden', i !== ativo));
 	for (const path of desenho.querySelectorAll<SVGPathElement>('[data-comodo]')) {
 		path.setAttribute('aria-pressed', String(path.dataset.comodo === id));
 	}
-	const muitos = planta.comodos.length > MAX_PONTOS;
+	const muitos = slideIds().length > MAX_PONTOS;
 	pontosEl.classList.toggle('hidden', muitos);
 	contador.classList.toggle('hidden', !muitos);
-	contador.textContent = `${ativo + 1}/${planta.comodos.length}`;
+	contador.textContent = `${ativo + 1}/${slideIds().length}`;
 	pontos().forEach((p, i) => {
 		p.setAttribute('aria-selected', String(i === ativo));
 		p.firstElementChild!.classList.toggle('ring-2', i === ativo);
