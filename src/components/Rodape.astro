@@ -1,6 +1,6 @@
 ---
 // Rodapé comum a todas as páginas (incluído pelo Layout).
-import { linkWhatsapp, NOME_SITE, WHATSAPP_VISIVEL } from '../site.ts';
+import { linkWhatsapp, NOME_SITE, WHATSAPP_VISIVEL, caminho } from '../site.ts';
 import Logo from './Logo.astro';
 const ano = new Date().getFullYear();
 ---
@@ -29,7 +29,7 @@ const ano = new Date().getFullYear();
 	<div class="border-t border-slate-100">
 		<div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
 			<p>© {ano} {NOME_SITE}</p>
-			<a href="/privacidade" class="transition hover:text-slate-900">Privacidade</a>
+			<a href={caminho('privacidade')} class="transition hover:text-slate-900">Privacidade</a>
 		</div>
 	</div>
 </footer>

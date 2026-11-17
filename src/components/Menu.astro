@@ -1,15 +1,18 @@
 ---
-import { NOME_SITE } from '../site.ts';
+import { NOME_SITE, caminho } from '../site.ts';
 import Logo from './Logo.astro';
 // Menu das ferramentas. Sem JS: no celular abre com <details>.
 const links = [
-	{ href: '/', rotulo: 'Início' },
-	{ href: '/simulador-reforma', rotulo: 'Calculadora de reforma' },
-	{ href: '/simulador-juros-obra', rotulo: 'Juros de obra', emBreve: true },
+	{ href: caminho(''), rotulo: 'Início' },
+	{ href: caminho('simulador-reforma'), rotulo: 'Calculadora de reforma' },
+	{ href: caminho('simulador-juros-obra'), rotulo: 'Juros de obra', emBreve: true },
 ];
 
-const atual = Astro.url.pathname.replace(/\/$/, '') || '/';
-const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith(href));
+// Compara sem a barra final e já com o caminho base (ex.: /torrez).
+const semBarra = (c: string) => c.replace(/\/$/, '');
+const atual = semBarra(Astro.url.pathname);
+const raiz = semBarra(caminho(''));
+const ativo = (href: string) => (semBarra(href) === raiz ? atual === raiz : atual.startsWith(semBarra(href)));
 ---
 
 <a
@@ -20,7 +23,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 </a>
 <header class="border-b border-slate-200 bg-white">
 	<nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6" aria-label="Principal">
-		<a href="/" class="flex min-h-14 items-center gap-2 font-bold tracking-tight text-slate-900">
+		<a href={caminho('')} class="flex min-h-14 items-center gap-2 font-bold tracking-tight text-slate-900">
 			<Logo class="h-9 w-auto" />
 			{NOME_SITE}
 		</a>

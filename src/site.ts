@@ -8,3 +8,7 @@ export const WHATSAPP_VISIVEL = '(71) 98778-4959';
 export function linkWhatsapp(mensagem = `Olá! Vim pelo site ${NOME_SITE}.`): string {
 	return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
 }
+
+// Caminho base do site: '/' em desenvolvimento e '/torrez/' no GitHub Pages.
+export const BASE = import.meta.env.BASE_URL;
+export const caminho = (rota: string) => `${BASE.replace(/\/$/, '')}/${rota.replace(/^\//, '')}`;

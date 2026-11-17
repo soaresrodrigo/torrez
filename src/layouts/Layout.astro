@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import Rodape from '../components/Rodape.astro';
-import { NOME_SITE } from '../site.ts';
+import { NOME_SITE, caminho } from '../site.ts';
 
 interface Props {
 	title?: string;
@@ -21,8 +21,8 @@ const {
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={caminho('favicon.svg')} />
+		<link rel="icon" href={caminho('favicon.ico')} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}

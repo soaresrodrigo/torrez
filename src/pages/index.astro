@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Menu from '../components/Menu.astro';
-import { linkWhatsapp, NOME_SITE } from '../site.ts';
+import { linkWhatsapp, NOME_SITE, caminho } from '../site.ts';
 
 // Foto do topo: Michael Brown (@vettexan), Unsplash License.
 const fotoTopo = 'https://images.unsplash.com/photo-1757524503555-b62633f47670?auto=format&fit=crop&w=1000&q=80';
@@ -21,7 +21,7 @@ const ferramentas = [
 		titulo: 'Calculadora de reforma',
 		texto: 'Marque cômodos e serviços na planta e veja quanto material comprar e quanto deve custar a mão de obra.',
 		itens: ['Piso, rodapé, pintura, gesso, revestimento, bancada e box', 'Planta editável: medidas, cômodos novos, arrastar', 'Link para mandar ao pedreiro ou à família'],
-		href: '/simulador-reforma',
+		href: caminho('simulador-reforma'),
 		acao: 'Abrir a calculadora',
 	},
 	{
@@ -69,7 +69,7 @@ const passos = [
 					</p>
 					<div class="anima-entrar mt-8 flex flex-wrap gap-3" style="--atraso: 240ms">
 						<a
-							href="/simulador-reforma"
+							href={caminho('simulador-reforma')}
 							class="aperta rounded-xl bg-teal-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-md"
 						>
 							Calcular minha reforma
@@ -97,7 +97,7 @@ const passos = [
 						style="--atraso: 200ms"
 					/>
 					<a
-						href="/simulador-reforma"
+						href={caminho('simulador-reforma')}
 						class="aperta absolute bottom-5 left-5 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-teal-800 shadow-lg transition hover:bg-white"
 					>
 						Calculadora grátis →
