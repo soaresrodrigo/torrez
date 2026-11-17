@@ -35,7 +35,7 @@ const passo =
 			<div class="anima-entrar min-w-0">
 				<h1 class="text-lg font-bold leading-tight tracking-tight text-slate-900 sm:text-3xl">Calculadora de reforma</h1>
 				<p class="hidden text-sm text-slate-600 sm:block">
-					Para apartamentos de 2 quartos com cerca de 40 m² · toque nos cômodos e marque os serviços
+					Simulador não oficial · para apartamentos de 2 quartos com cerca de 40 m² · toque nos cômodos e marque os serviços
 				</p>
 			</div>
 			<div class="anima-entrar flex shrink-0 items-center gap-2" style="--atraso: 80ms">
@@ -197,10 +197,21 @@ const passo =
 							%
 						</label>
 					</div>
+					<details class="mt-1.5 text-[11px] text-slate-500">
+						<summary class="w-fit cursor-pointer font-medium text-teal-700 hover:underline">O que é perda?</summary>
+						<p class="mt-1 leading-snug">
+							É a sobra de material que se perde em cortes e quebras, como piso, rodapé e revestimento. A calculadora soma essa
+							porcentagem à quantidade a comprar. Ela não altera a mão de obra, que é cobrada pela área.
+						</p>
+					</details>
 					<output id="resultado" for="calc" class="mt-2 block min-h-0 flex-1 overflow-y-auto" aria-live="polite">
 						<p class="text-sm text-slate-500">Toque em um cômodo da planta ou escolha um pacote.</p>
 					</output>
-					<p class="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-500">
+					<p class="mt-2 border-t border-slate-100 pt-2 text-[11px] leading-snug text-slate-600">
+						<strong class="font-semibold text-slate-800">Esta é uma simulação ilustrativa.</strong> Quem define a quantidade
+						de material e o orçamento final é o profissional que vai fazer a obra, depois de conferir o apartamento na vistoria.
+					</p>
+					<p class="mt-1.5 text-[11px] leading-snug text-slate-500">
 						Preços de referência para Salvador e região (BA), de uma busca rápida na internet (nov/2026). Piso, rodapé,
 						pintura e revestimento são só mão de obra; o material está em “comprar”. Não é cotação: peça orçamento antes de fechar. Medidas de uma planta típica de 2 quartos com cerca de 40 m² (34,9 m² de piso, sem contar as paredes). Em apartamentos desse tamanho, as quantidades mudam pouco; portas e janelas têm tamanho padrão.
 					</p>
